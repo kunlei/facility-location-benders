@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * define a class that represents a facility location problem instance.
  */
-public class Instance {
+public final class Instance {
   /**
    * total number of facilities
    */
@@ -29,7 +29,7 @@ public class Instance {
    * facility fixed costs
    * size: 1 * numFacilities
    */
-  private int[] fixedCosts;
+  private double[] fixedCosts;
 
   /**
    * customer demands
@@ -52,18 +52,21 @@ public class Instance {
     flowCosts = null;
   }
 
+  /**
+   * read data from file
+   * @param filename name of the input file
+   */
   public void readData(String filename) {
     try {
       File file = new File(filename);
       Scanner sc = new Scanner(file);
 
-      sc.useDelimiter("\n\r\\s+");
-
       numFacilities = sc.nextInt();
       numCustomers = sc.nextInt();
 
+      // create data objects
       capacities = new int[numFacilities];
-      fixedCosts = new int[numFacilities];
+      fixedCosts = new double[numFacilities];
       demands = new int[numCustomers];
       flowCosts = new double[numCustomers][numFacilities];
       for (int i = 0; i < numCustomers; ++i) {
@@ -71,19 +74,20 @@ public class Instance {
       }
 
       // read in facility capacities and fixed cost
-      for (int i = 0; i < numFacilities; ++i) {
-        capacities[i] = sc.nextInt();
-        fixedCosts[i] = sc.nextInt();
+      for (int f = 0; f < numFacilities; ++f) {
+        capacities[f] = sc.nextInt();
+        fixedCosts[f] = sc.nextDouble();
       }
 
       // read in customer demand and flow cost
-      for (int i = 0; i < numCustomers; ++i) {
-        demands[i] = sc.nextInt();
+      for (int c = 0; c < numCustomers; ++c) {
+        demands[c] = sc.nextInt();
         for (int f = 0; f < numFacilities; ++f) {
-          flowCosts[i][f] = sc.nextDouble();
+          flowCosts[c][f] = sc.nextDouble();
         }
       }
 
+      sc.close();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -101,7 +105,7 @@ public class Instance {
     return capacities[fIdx];
   }
 
-  public int getFixedCost(int fIdx) {
+  public double getFixedCost(int fIdx) {
     return fixedCosts[fIdx];
   }
 
@@ -115,13 +119,24 @@ public class Instance {
 
   @Override
   public String toString() {
-    return "Instance{" +
-        "numFacilities=" + numFacilities +
-        ", numCustomers=" + numCustomers +
-        ", capacities=" + Arrays.toString(capacities) +
-        ", fixedCosts=" + Arrays.toString(fixedCosts) +
-        ", demands=" + Arrays.toString(demands) +
-        ", flowCosts=" + Arrays.toString(flowCosts) +
-        '}';
+    StringBuilder builder = new StringBuilder("Instance{");
+    builder.append("numFacilities: ").append(numFacilities)
+        .append("\nnumCustomers: ").append(numCustomers);
+    for (int f = 0; f < numFacilities; ++f) {
+      builder.append("\nfacility ").append(f).append(": capacity: ")
+          .append(capacities[f])
+          .append("\tfixedCost: ")
+          .append(fixedCosts[f]);
+    }
+    for (int c = 0; c < numCustomers; ++c) {
+      builder.append("\ncustomer ").append(c).append(": demand: ").append(demands[c]);
+    }
+    for (int c = 0; c < numCustomers; ++c) {
+      builder.append("\n");
+      for (int f = 0; f < numFacilities; ++f) {
+        builder.append(flowCosts[c][f]).append("\t");
+      }
+    }
+    return builder.toString();
   }
 }
