@@ -6,5 +6,8 @@ public class Console {
     Instance inst = new Instance();
     inst.readData("/Users/klian/dev/facility-location-benders/instance/cap41.txt");
     System.out.println(inst.toString());
+
+    MIPModel mipModel = new MIPModel(inst);
+    mipModel.solve();
   }
 }

@@ -1,9 +1,8 @@
 package com.learn.opt.benders;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Scanner;
+import java.io.FileNotFoundException;
 
 /**
  * define a class that represents a facility location problem instance.
@@ -83,7 +82,7 @@ public final class Instance {
       for (int c = 0; c < numCustomers; ++c) {
         demands[c] = sc.nextInt();
         for (int f = 0; f < numFacilities; ++f) {
-          flowCosts[c][f] = sc.nextDouble();
+          flowCosts[c][f] = sc.nextDouble() / demands[c];
         }
       }
 
